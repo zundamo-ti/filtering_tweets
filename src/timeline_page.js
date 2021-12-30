@@ -76,6 +76,8 @@ const TimelinePage = ({ username, regexp }) => {
 
   return (
     <Fragment>
+      From the latest {tweets.length} tweets
+      <br />
       <button
         onClick={loadMore}>
         load more
