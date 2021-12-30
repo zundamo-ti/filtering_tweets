@@ -16,6 +16,12 @@ export const GET_TIMELINE = gql`
           likeCount
           quoteCount
         }
+        user {
+          id
+          createdAt
+          name
+          username
+        }
       }
       prevToken
       nextToken
@@ -49,9 +55,7 @@ const TimelinePage = ({ username, regexp }) => {
           tweets
           .filter(tweet => regexp.test(tweet.text))
           .map(tweet => {
-            return (
-              <Tweet key={tweet.id} tweet={tweet}/>
-            )
+            return <Tweet key={tweet.id} tweet={tweet}/>
           })
         }
       </ul>

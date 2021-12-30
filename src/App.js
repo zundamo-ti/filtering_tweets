@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import TimelinePage from "./timeline_page_2";
+import TimelinePage from "./timeline_page";
 
 const fromQueryToRegExp = (query) => {
   return new RegExp(query)
