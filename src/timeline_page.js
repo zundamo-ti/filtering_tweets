@@ -24,9 +24,9 @@ export const GET_TIMELINE = gql`
 `;
 
 const TimelinePage = ({ username, regexp }) => {
+  const [tweets, setTweets] = useState([])
   const [token, setToken] = useState(null)
-  const [page, setPage] = useState(0)
-  const { loading, error, data } = useQuery(
+  const { error, fetchMore } = useQuery(
     GET_TIMELINE, {
     variables: {
       username,
@@ -34,44 +34,49 @@ const TimelinePage = ({ username, regexp }) => {
     }
   })
 
+  if (!username) {
+    return (
+      <div>Put user name</div>
+    )
+  }
+
   let element;
-  if (loading) element = <div>Loading...</div>
-  else if (error) element = <div>{`Error! ${error}`}</div>
-  else if (!data) element = <div>Not Found</div>
-  else element = (
-    <ul>
-      {data.getTimelineByUsername.tweets
-        .filter(
-          ({ text }) => (new RegExp(regexp)).test(text)
-        )
-        .map(
-          tweet => <Tweet key={tweet.id} tweet={tweet}/>
-        )
+  if (error) element = <div>{`Error! ${error}`}</div>
+  else {
+    element = (
+      <ul>
+        {
+          tweets
+          .filter(tweet => regexp.test(tweet.text))
+          .map(tweet => {
+            return (
+              <Tweet key={tweet.id} tweet={tweet}/>
+            )
+          })
+        }
+      </ul>
+    )
+  }
+
+  const loadMore = async () => {
+    await fetchMore({
+      variables: {
+        username,
+        token: token
       }
-    </ul>
-  )
+    })
+    .then(({ data }) => {
+      setToken(data.getTimelineByUsername.nextToken)
+      setTweets([...tweets, ...data.getTimelineByUsername.tweets])
+    })
+  }
 
   return (
     <Fragment>
-      Page {page}
-      <br />
       <button
-        onClick={() => {
-          setToken(data.getTimelineByUsername.nextToken)
-          setPage(page + 1)
-        }}>
-        next
+        onClick={loadMore}>
+        load more
       </button>
-      {
-        page > 0 &&
-        <button
-          onClick={() => {
-            setToken(data.getTimelineByUsername.prevToken)
-            setPage(page - 1)
-          }}>
-          prev
-        </button>
-      }
       {element}
     </Fragment>
   )
