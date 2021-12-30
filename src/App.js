@@ -1,30 +1,25 @@
 import React, { Fragment } from "react";
-import TimelinePage from "./timeline_page";
+import TimelinePage from "./timeline_page_2";
+
+const fromQueryToRegExp = (query) => {
+  return new RegExp(query)
+}
 
 class App extends React.Component {
   state = {
     username: null,
-    showTimeline: false,
-    regexp: ''
+    query: ''
   }
 
   changeUsername = (event) => {
     this.setState({
-      username: event.target.value,
-      showTimeline: false
+      username: event.target.value
     })
   }
 
-  changeRegExp = (event) => {
+  changeQuery = (event) => {
     this.setState({
-      regexp: event.target.value,
-      showTimeline: false
-    })
-  }
-
-  showTimeline = () => {
-    this.setState({
-      showTimeline: !this.state.showTimeline
+      query: event.target.value
     })
   }
 
@@ -32,22 +27,18 @@ class App extends React.Component {
     return (
       <Fragment>
         <div>
-          <label>user name</label>
+          <label>user name: @</label>
           <input type='text' onChange={this.changeUsername}/>
         </div>
         <div>
-          <label>regexp</label>
-          <input type='text' onChange={this.changeRegExp}/>
+          <label>query: </label>
+          <input type='text' onChange={this.changeQuery}/>
         </div>
-        <button onClick={this.showTimeline}>search</button>
         <hr />
-        {
-          this.state.showTimeline &&
-          <TimelinePage
-            key={this.state.username}
-            regexp={this.state.regexp}
-            username={this.state.username} />
-        }
+        <TimelinePage
+          key={this.state.username}
+          regexp={fromQueryToRegExp(this.state.query)}
+          username={this.state.username} />
       </Fragment>
     )
   }
