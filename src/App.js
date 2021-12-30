@@ -3,13 +3,22 @@ import TimelinePage from "./timeline_page";
 
 class App extends React.Component {
   state = {
-    userId: null,
-    showTimeline: false
+    username: null,
+    showTimeline: false,
+    regexp: ''
   }
 
-  changeUserId = (event) => {
+  changeUsername = (event) => {
     this.setState({
-      userId: event.target.value
+      username: event.target.value,
+      showTimeline: false
+    })
+  }
+
+  changeRegExp = (event) => {
+    this.setState({
+      regexp: event.target.value,
+      showTimeline: false
     })
   }
 
@@ -23,16 +32,21 @@ class App extends React.Component {
     return (
       <Fragment>
         <div>
-          <label>user id</label>
-          <input type='text' onChange={this.changeUserId}/>
-          <button onClick={this.showTimeline}>TL</button>
+          <label>user name</label>
+          <input type='text' onChange={this.changeUsername}/>
         </div>
+        <div>
+          <label>regexp</label>
+          <input type='text' onChange={this.changeRegExp}/>
+        </div>
+        <button onClick={this.showTimeline}>search</button>
         <hr />
         {
           this.state.showTimeline &&
           <TimelinePage
-            key={this.state.userId}
-            userId={this.state.userId} />
+            key={this.state.username}
+            regexp={this.state.regexp}
+            username={this.state.username} />
         }
       </Fragment>
     )
