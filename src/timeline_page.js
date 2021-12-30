@@ -30,6 +30,7 @@ export const GET_TIMELINE = gql`
 `;
 
 const TimelinePage = ({ username, regexp }) => {
+  const [reverse, setReverse] = useState(false)
   const [tweets, setTweets] = useState([])
   const [token, setToken] = useState(null)
   const { error, fetchMore } = useQuery(
@@ -49,16 +50,14 @@ const TimelinePage = ({ username, regexp }) => {
   let element;
   if (error) element = <div>{`Error! ${error}`}</div>
   else {
+    let displayTweets = tweets.filter(
+      tweet => regexp.test(tweet.text)
+    ).map(tweet => {
+        return <Tweet key={tweet.id} tweet={tweet}/>
+    })
+    if (reverse) displayTweets = displayTweets.reverse()
     element = (
-      <ul>
-        {
-          tweets
-          .filter(tweet => regexp.test(tweet.text))
-          .map(tweet => {
-            return <Tweet key={tweet.id} tweet={tweet}/>
-          })
-        }
-      </ul>
+      <ul>{displayTweets}</ul>
     )
   }
 
@@ -80,6 +79,10 @@ const TimelinePage = ({ username, regexp }) => {
       <button
         onClick={loadMore}>
         load more
+      </button>
+      <button
+        onClick={() => {setReverse(!reverse)}}>
+        reverse order
       </button>
       {element}
     </Fragment>
