@@ -79,7 +79,8 @@ const TimelinePage = ({ username, regexp }) => {
       From the latest {tweets.length} tweets
       <br />
       <button
-        onClick={loadMore}>
+        onClick={loadMore}
+        disabled={!token && tweets.length > 0}>
         load more
       </button>
       <button

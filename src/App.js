@@ -8,7 +8,8 @@ const fromQueryToRegExp = (query) => {
 class App extends React.Component {
   state = {
     username: null,
-    query: ''
+    queryString: '',
+    queryRegExp: new RegExp()
   }
 
   changeUsername = (event) => {
@@ -17,9 +18,9 @@ class App extends React.Component {
     })
   }
 
-  changeQuery = (event) => {
+  changeQueryString = (event) => {
     this.setState({
-      query: event.target.value
+      queryString: event.target.value
     })
   }
 
@@ -31,13 +32,23 @@ class App extends React.Component {
           <input type='text' onChange={this.changeUsername}/>
         </div>
         <div>
-          <label>query: </label>
-          <input type='text' onChange={this.changeQuery}/>
+          <label>query regexp: </label>
+          <input type='text' onChange={this.changeQueryString}/>
         </div>
+        <button
+          onClick={() => {
+            this.setState({
+              queryRegExp: fromQueryToRegExp(
+                this.state.queryString
+              )
+            })
+          }}>
+          filtering
+        </button>
         <hr />
         <TimelinePage
           key={this.state.username}
-          regexp={fromQueryToRegExp(this.state.query)}
+          regexp={this.state.queryRegExp}
           username={this.state.username} />
       </Fragment>
     )
